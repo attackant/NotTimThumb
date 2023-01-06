@@ -1,4 +1,4 @@
-mThumb (a secure PHP image resize script)
+NotTimThumb pre-alpha (under construction) (a secure PHP image resize script)
 ======
 
 A secure, slimmed down version of the ol' standby TimThumb. 
