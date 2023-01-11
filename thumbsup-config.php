@@ -1,50 +1,40 @@
 <?php
 /**
- * mthumb-config.php
+ * thumbsup-config.php
  *
- * Example mThumb configuration file.
+ * Example ThumbsUp configuration file.
  *
  * @created   4/2/14 11:52 AM
- * @author    Mindshare Studios, Inc.
- * @copyright Copyright (c) 2006-2015
- * @link      http://www.mindsharelabs.com/
+ * @author    Damian Taggart
+ * @copyright Copyright (c) 2006-2023
+ * @link      https://github.com/attackant/thumbsup
  *
  */
 
 // Max sizes
-if (!defined('MAX_WIDTH')) {
-    define('MAX_WIDTH', 3600);
-}
-if (!defined('MAX_HEIGHT')) {
+if (!defined('MAX_WIDTH'))
+    define("MAX_WIDTH", 3600);
+if (!defined('MAX_HEIGHT'))
     define('MAX_HEIGHT', 3600);
-}
-if (!defined('MAX_FILE_SIZE')) {
-    define('MAX_FILE_SIZE', 20971520); // 20MB
-}
+if (!defined('MAX_FILE_SIZE'))
+    define('MAX_FILE_SIZE', 20971520);
 
 /*
  *  External Sites
  */
 global $ALLOWED_SITES;
-$ALLOWED_SITES = array(
+$ALLOWED_SITES = [
     'flickr.com',
     'staticflickr.com',
-    'picasa.com',
     'img.youtube.com',
     'upload.wikimedia.org',
-    'photobucket.com',
     'imgur.com',
-    'imageshack.us',
-    'tinypic.com',
-    'mind.sh',
-    'mindsharelabs.com',
-    'mindsharestudios.com'
-);
+];
 
 // The rest of the code in this config only applies to Apache mod_userdir  (URIs like /~username)
 
-if (mthumb_in_url('~')) {
-    $_SERVER['DOCUMENT_ROOT'] = mthumb_find_wp_root();
+if (thumbsup_in_url('~')) {
+    $_SERVER['DOCUMENT_ROOT'] = thumbsup_find_wp_root();
 }
 
 /**
@@ -58,7 +48,7 @@ if (mthumb_in_url('~')) {
  *
  * @return bool|string
  */
-function mthumb_find_wp_root($levels = 9)
+function thumbsup_find_wp_root($levels = 9): bool|string
 {
 
     $dir_name = dirname(__FILE__) . '/';
@@ -79,10 +69,14 @@ function mthumb_find_wp_root($levels = 9)
  *
  * @return string
  */
-function mthumb_get_url()
+function thumbsup_get_url(): string
 {
-    $s = empty($_SERVER["HTTPS"]) ? '' : ($_SERVER["HTTPS"] == "on") ? "s" : "";
-    $protocol = substr(strtolower($_SERVER["SERVER_PROTOCOL"]), 0, strpos(strtolower($_SERVER["SERVER_PROTOCOL"]), "/")) . $s;
+    if (($_SERVER["HTTPS"] == "on")) {
+        $s = empty($_SERVER["HTTPS"]) ? '' : "s";
+    } else {
+        $s = empty($_SERVER["HTTPS"]) ? '' : "";
+    }
+    $protocol = substr(strtolower($_SERVER["SERVER_PROTOCOL"]), offset: 0, length: strpos(strtolower($_SERVER["SERVER_PROTOCOL"]), needle: "/")) . $s;
     $port = ($_SERVER["SERVER_PORT"] == "80") ? "" : (":" . $_SERVER["SERVER_PORT"]);
 
     return $protocol . "://" . $_SERVER['SERVER_NAME'] . $port . $_SERVER['REQUEST_URI'];
@@ -96,11 +90,7 @@ function mthumb_get_url()
  *
  * @return bool
  */
-function mthumb_in_url($text)
+function thumbsup_in_url($text): bool
 {
-    if (stristr(mthumb_get_url(), $text)) {
-        return TRUE;
-    } else {
-        return FALSE;
-    }
+    return (bool)stristr(thumbsup_get_url(), $text);
 }

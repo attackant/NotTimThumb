@@ -1,10 +1,11 @@
 <?php
 /*
-NotTimThumb
-URI: https://github.com/attackant/NotTimThumb
+ThumbsUp
+URI: https://github.com/attackant/thumbsup
 Description: A secure PHP image resize script.
 Version: 4.0
 Author: Damian Taggart
+Credits: Based on work by Ben Gillbanks, Mark Maunder, Tim McDaniels and Darren Hoyt
 Author URI: https://github.com/attackant
 License: GNU General Public License v3
 License URI: LICENSE
@@ -25,123 +26,91 @@ License URI: LICENSE
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * Credits: based on TimThumb by Ben Gillbanks, Mark Maunder, Tim McDaniels and Darren Hoyt
  *
  */
 
 /*
- * --- mThumb CONFIGURATION ---
- * To edit the configs it is best to create a file called mthumb-config.php
+ * --- ThumbsUp CONFIGURATION ---
+ * To edit the configs create a file called thumbsup-config.php
  * and define variables you want to customize in there. It will automatically be
- * loaded by mthumb. This will save you having to re-edit these variables
+ * loaded by ThumbsUp. This will save you having to re-edit these variables
  * every time you download a new version.
 */
 
 /**
- * Version of this script *
+ * Version of this script
  */
-define('VERSION', '4.0');
+const VERSION = '4.0';
 
-//Load a config file if it exists. Otherwise, use the values below
-if (file_exists(dirname(__FILE__) . '/mthumb-config.php')) {
-    require_once('mthumb-config.php');
-}
+// Load a config file if it exists. Otherwise, use the values below
+if (file_exists(dirname(__FILE__) . '/thumbsup-config.php'))
+    require_once('thumbsup-config.php');
 
-if (!defined('DEBUG_ON')) {
-    /**
-     * Enable debug logging to web server error log (STDERR)
-     */
-    define('DEBUG_ON', FALSE);
-}
+/**
+ * Enable debug logging to web server error log (STDERR)
+ */
+if (!defined('DEBUG_ON')) define('DEBUG_ON', FALSE);
 
-if (!defined('DEBUG_LEVEL')) {
-    /**
-     * Debug level 1 is less noisy and 3 is the most noisy
-     *
-     */
-    define('DEBUG_LEVEL', 1);
-}
+/**
+ * Debug level 1 is less noisy and 3 is the most noisy
+ */
+if (!defined('DEBUG_LEVEL')) define('DEBUG_LEVEL', 1);
 
-if (!defined('DISPLAY_ERROR_MESSAGES')) {
-    /**
-     * Display error messages. Set to false to turn off errors (good for production websites)
-     */
-    define('DISPLAY_ERROR_MESSAGES', FALSE);
-}
+/**
+ * Display error messages. Set to false in order to turn off errors (good for production websites)
+ */
+if (!defined('DISPLAY_ERROR_MESSAGES')) define('DISPLAY_ERROR_MESSAGES', FALSE);
 
-if (!defined('ALLOW_EXTERNAL')) {
-    /**
-     *  Allow image fetching from external websites. Will check against ALLOWED_SITES always.     *
-     */
-    define('ALLOW_EXTERNAL', FALSE);
-}
+/**
+ *  Allow image fetching from external websites. Will check against ALLOWED_SITES always.     *
+ */
+if (!defined('ALLOW_EXTERNAL')) define('ALLOW_EXTERNAL', FALSE);
 
-if (!isset($ALLOWED_SITES)) {
-    /**
-     *  If ALLOW_EXTERNAL is true then external images will only be fetched from these domains and their subdomains.
-     */
-    $ALLOWED_SITES = array(
-        'flickr.com',
-        'staticflickr.com',
-        'img.youtube.com',
-        'upload.wikimedia.org',
-        'imgur.com',
-        'imageshack.us',
-        'tinypic.com',
-    );
-}
+/**
+ *  If ALLOW_EXTERNAL is true then external images will only be fetched from these domains and their subdomains.
+ */
+if (!isset($ALLOWED_SITES)) $ALLOWED_SITES = [];
 
-if (!defined('FILE_CACHE_ENABLED')) {
-    /**
-     * Should we store resized/modified images on disk to speed things up?
-     */
-    define('FILE_CACHE_ENABLED', TRUE);
-}
+/**
+ * Should we store resized/modified images on disk to speed things up?
+ */
+if (!defined('FILE_CACHE_ENABLED')) define('FILE_CACHE_ENABLED', TRUE);
 
-if (!defined('DAY_IN_SECONDS')) {
-    define('DAY_IN_SECONDS', 24 * 60 * 60);
-}
+if (!defined('DAY_IN_SECONDS')) define('DAY_IN_SECONDS', 24 * 60 * 60);
 
-if (!defined('FILE_CACHE_TIME_BETWEEN_CLEANS')) {
-    /**
-     * How often the cache is cleaned
-     */
+/**
+ * How often the cache is cleaned
+ */
+if (!defined('FILE_CACHE_TIME_BETWEEN_CLEANS'))
     define('FILE_CACHE_TIME_BETWEEN_CLEANS', DAY_IN_SECONDS * 30);
-}
 
-if (!defined('FILE_CACHE_MAX_FILE_AGE')) {
-    /**
-     *  How old does a file have to be to be deleted from the cache
-     */
+/**
+ *  How old does a file have to be to be deleted from the cache
+ */
+if (!defined('FILE_CACHE_MAX_FILE_AGE'))
     define('FILE_CACHE_MAX_FILE_AGE', DAY_IN_SECONDS * 60);
-}
 
-if (!defined('FILE_CACHE_SUFFIX')) {
-    /**
-     * What to put at the end of all files in the cache directory so we can identify them
-     */
+/**
+ * What to put at the end of all files in the cache directory so we can identify them
+ */
+if (!defined('FILE_CACHE_SUFFIX'))
     define('FILE_CACHE_SUFFIX', '.txt');
-}
 
-if (!defined('FILE_CACHE_PREFIX')) {
-    /**
-     * What to put at the beg of all files in the cache directory so we can identify them
-     */
-    define('FILE_CACHE_PREFIX', 'mthumb');
-}
+/**
+ * What to put at the beg of all files in the cache directory so we can identify them
+ */
+if (!defined('FILE_CACHE_PREFIX'))
+    define('FILE_CACHE_PREFIX', 'thumbsup');
 
-if (!defined('FILE_CACHE_DIRECTORY')) {
-    /**
-     * Directory where images are cached. Left blank it will use the system temporary directory (which is better for security)
-     *
-     */
-    //define ('FILE_CACHE_DIRECTORY', './cache');
-    define('FILE_CACHE_DIRECTORY', FALSE); // @todo test on more deployments
-}
+/**
+ * Directory where images are cached. Left blank it will use the system temporary directory (which is better for security)
+ *
+ */
+if (!defined('FILE_CACHE_DIRECTORY'))
+    define('FILE_CACHE_DIRECTORY', FALSE); //define ('FILE_CACHE_DIRECTORY', './cache');
 
-if (!defined('TEN_MB_IN_BTYES')) {
-    define('TEN_MB_IN_BTYES', 10485760);
-}
+
+if (!defined('TEN_MB_IN_BTYES')) define('TEN_MB_IN_BTYES', 10485760);
 //
 if (!defined('MAX_FILE_SIZE')) {
     /**
@@ -180,12 +149,8 @@ if (!defined('BROWSER_CACHE_DISABLE')) {
     define('BROWSER_CACHE_DISABLE', FALSE);
 }
 
-if (!defined('MAX_WIDTH')) {
-    define('MAX_WIDTH', 3200);
-}
-if (!defined('MAX_HEIGHT')) {
-    define('MAX_HEIGHT', 3200);
-}
+if (!defined('MAX_WIDTH')) define('MAX_WIDTH', 3200);
+if (!defined('MAX_HEIGHT')) define('MAX_HEIGHT', 3200);
 
 if (!defined('PNG_IS_TRANSPARENT')) {
     /**
@@ -197,7 +162,7 @@ if (!defined('PNG_IS_TRANSPARENT')) {
 
 if (!defined('DEFAULT_Q')) {
     /**
-     * Default image quality. Allows override in mthumb-config.php
+     * Default image quality. Allows override in thumbsup-config.php
      *
      */
     define('DEFAULT_Q', 85);
@@ -205,14 +170,14 @@ if (!defined('DEFAULT_Q')) {
 
 if (!defined('DEFAULT_ZC')) {
     /**
-     * Default zoom/crop setting. Allows override in mthumb-config.php
+     * Default zoom/crop setting. Allows override in thumbsup-config.php
      */
     define('DEFAULT_ZC', 1);
 }
 
 if (!defined('DEFAULT_F')) {
     /**
-     * Default image filters. Allows override in mthumb-config.php
+     * Default image filters. Allows override in thumbsup-config.php
      */
     define('DEFAULT_F', '');
 }
@@ -220,35 +185,35 @@ if (!defined('DEFAULT_F')) {
 //
 if (!defined('DEFAULT_S')) {
     /**
-     * Default sharpen value. Allows override in mthumb-config.php
+     * Default sharpen value. Allows override in thumbsup-config.php
      */
     define('DEFAULT_S', 0);
 }
 
 if (!defined('DEFAULT_CC')) {
     /**
-     * Default canvas colour. Allows override in mthumb-config.php
+     * Default canvas colour. Allows override in thumbsup-config.php
      */
     define('DEFAULT_CC', 'ffffff');
 }
 
 if (!defined('DEFAULT_WIDTH')) {
     /**
-     * Default thumbnail width. Allows override in mthumb-config.php
+     * Default thumbnail width. Allows override in thumbsup-config.php
      */
     define('DEFAULT_WIDTH', 125);
 }
 
 if (!defined('DEFAULT_HEIGHT')) {
     /**
-     * Default thumbnail height. Allows override in mthumb-config.php
+     * Default thumbnail height. Allows override in thumbsup-config.php
      */
     define('DEFAULT_HEIGHT', 125);
 }
 
 /**
  * Additional Parameters:
- * LOCAL_FILE_BASE_DIRECTORY = Override the DOCUMENT_ROOT. This is best used in mthumb-config.php
+ * LOCAL_FILE_BASE_DIRECTORY = Override the DOCUMENT_ROOT. This is best used in thumbsup-config.php
  */
 
 if (!defined('OPTIPNG_ENABLED')) {
@@ -279,11 +244,11 @@ if (!defined('PNGCRUSH_PATH')) {
 
 // -------------- STOP EDITING CONFIGURATION HERE --------------
 
-if (!class_exists('mthumb')) : /**
- * Class mthumb
+if (!class_exists('ThumbsUp')) : /**
+ * Class ThumbsUp
  */
     {
-        class mthumb
+        class ThumbsUp
         {
 
             /**
@@ -317,23 +282,23 @@ if (!class_exists('mthumb')) : /**
             /**
              * @var mixed|string
              */
-            protected $myHost = "";
+            protected mixed $myHost = "";
             /**
              * @var bool
              */
-            protected $isURL = FALSE;
+            protected bool $isURL = FALSE;
             /**
              * @var string
              */
-            protected $cachefile = '';
+            protected string $cachefile = '';
             /**
              * @var array
              */
-            protected $errors = array();
+            protected array $errors = array();
             /**
              * @var array
              */
-            protected $toDeletes = array();
+            protected array $toDeletes = array();
             /**
              * @var string
              */
@@ -341,47 +306,47 @@ if (!class_exists('mthumb')) : /**
             /**
              * @var int|mixed
              */
-            protected $startTime = 0;
+            protected mixed $startTime = 0;
             /**
              * @var int
              */
-            protected $lastBenchTime = 0;
+            protected int $lastBenchTime = 0;
             /**
              * @var bool
              */
-            protected $cropTop = FALSE;
+            protected bool $cropTop = FALSE;
             /**
              * @var string
              */
-            protected $salt = "";
+            protected string $salt = "";
             /**
-             * Generally if mthumb.php is modified (upgraded) then the salt changes and all cache files are recreated. This is a backup mechanism to force regen.
+             * Generally if thumbsup.php is modified (upgraded) then the salt changes and all cache files are recreated. This is a backup mechanism to force regen.
              *
              * @var int
              */
-            protected $fileCacheVersion = 1;
+            protected int $fileCacheVersion = 1;
             /**
              *
              * Designed to have three letter mime type, space, question mark and greater than symbol appended. 6 bytes total.
              *
              * @var string
              */
-            protected $filePrependSecurityBlock = "<?php die('Execution denied!'); //";
+            protected string $filePrependSecurityBlock = "<?php die('Execution denied!'); //";
             /**
              * @var int
              */
-            protected static $curlDataWritten = 0;
+            protected static int $curlDataWritten = 0;
             /**
              * @var bool
              */
-            protected static $curlFH = FALSE;
+            protected static bool $curlFH = FALSE;
 
             /**
-             *
+             * @return void
              */
-            public static function start()
+            public static function start(): void
             {
-                $mthumb = new mthumb();
+                $mthumb = new ThumbsUp();
                 $mthumb->handleErrors();
 
                 if ($mthumb->tryBrowserCache()) {
@@ -492,7 +457,7 @@ if (!class_exists('mthumb')) : /**
                         }
                     }
                     if (!$allowed) {
-                        return $this->error("You may not fetch images from that site. To enable this site in mthumb, you can either add it to \$ALLOWED_SITES and set ALLOW_EXTERNAL=true.");
+                        return $this->error("You may not fetch images from that site. To enable this site in thumbsup, you can either add it to \$ALLOWED_SITES and set ALLOW_EXTERNAL=true.");
                     }
                 }
 
@@ -750,7 +715,7 @@ if (!class_exists('mthumb')) : /**
 
                     return FALSE;
                 }
-                $tempfile = tempnam($this->cacheDirectory, 'mthumb');
+                $tempfile = tempnam($this->cacheDirectory, 'thumbsup');
                 $this->debug(3, "Fetching external image into temporary file $tempfile");
                 $this->toDelete($tempfile);
                 // fetch file here
@@ -790,13 +755,13 @@ if (!class_exists('mthumb')) : /**
                     return;
                 }
                 $this->debug(3, "cleanCache() called");
-                $lastCleanFile = $this->cacheDirectory . '/mthumb_cacheLastCleanTime.touch';
+                $lastCleanFile = $this->cacheDirectory . '/thumbsup_cacheLastCleanTime.touch';
 
                 // If the cache dir isn't writable, exit
                 if (!is_writable($lastCleanFile)) {
                     return;
                 }
-                //If this is a new mthumb installation we need to create the file
+                //If this is a new thumbsup installation we need to create the file
                 if (!is_file($lastCleanFile)) {
                     $this->debug(1, "File tracking last clean doesn't exist. Creating $lastCleanFile");
                     if (!touch($lastCleanFile)) {
@@ -1101,7 +1066,7 @@ if (!class_exists('mthumb')) : /**
                     imagetruecolortopalette($canvas, FALSE, imagecolorstotal($image));
                 }
 
-                $tempfile = tempnam($this->cacheDirectory, 'mthumb_tmpimg_');
+                $tempfile = tempnam($this->cacheDirectory, 'thumbsup_tmpimg_');
                 if (preg_match('/^image\/(?:jpg|jpeg)$/i', $mimeType)) {
                     $imgType = 'jpg';
                     imagejpeg($canvas, $tempfile, $quality);
@@ -1139,7 +1104,7 @@ if (!class_exists('mthumb')) : /**
                 } else {
                     if ($imgType == 'png' && PNGCRUSH_ENABLED && PNGCRUSH_PATH && @is_file(PNGCRUSH_PATH)) {
                         $exec = PNGCRUSH_PATH;
-                        $tempfile2 = tempnam($this->cacheDirectory, 'mthumb_tmpimg_');
+                        $tempfile2 = tempnam($this->cacheDirectory, 'thumbsup_tmpimg_');
                         $this->debug(3, "pngcrush'ing $tempfile to $tempfile2");
                         $out = `$exec $tempfile $tempfile2`;
 
@@ -1162,7 +1127,7 @@ if (!class_exists('mthumb')) : /**
                 }
 
                 $this->debug(3, "Rewriting image with security header.");
-                $tempfile4 = tempnam($this->cacheDirectory, 'mthumb_tmpimg_');
+                $tempfile4 = tempnam($this->cacheDirectory, 'thumbsup_tmpimg_');
                 $context = stream_context_create();
                 $fp = fopen($tempfile, 'r', 0, $context);
                 file_put_contents($tempfile4, $this->filePrependSecurityBlock . $imgType . ' ?' . '>'); //6 extra bytes, first 3 being image type
@@ -1241,7 +1206,7 @@ if (!class_exists('mthumb')) : /**
                         return $this->realpath($file);
                     }
 
-                    return $this->error("Could not find your website document root and the file specified doesn't exist in mThumb's directory. We don't support serving files outside mThumb's directory without a document root for security reasons.");
+                    return $this->error("Could not find your website document root and the file specified doesn't exist in ThumbsUp's directory. We don't support serving files outside ThumbsUp's directory without a document root for security reasons.");
                 } else {
                     if (!is_dir($this->docRoot)) {
                         $this->error("Server path does not exist. Ensure variable \$_SERVER['DOCUMENT_ROOT'] is set correctly");
@@ -1353,7 +1318,7 @@ if (!class_exists('mthumb')) : /**
             {
                 $this->debug(3, "Serving {$this->cachefile}");
                 if (!is_file($this->cachefile)) {
-                    $this->error("serveCacheFile called in mthumb but we couldn't find the cached file.");
+                    $this->error("serveCacheFile called in thumbsup but we couldn't find the cached file.");
 
                     return FALSE;
                 }
@@ -1515,7 +1480,7 @@ if (!class_exists('mthumb')) : /**
                         $tick = sprintf('%.6f', microtime(TRUE) - $this->lastBenchTime);
                     }
                     $this->lastBenchTime = microtime(TRUE);
-                    error_log("mThumb Debug line " . __LINE__ . " [$execTime : $tick]: $msg");
+                    error_log("ThumbsUp Debug line " . __LINE__ . " [$execTime : $tick]: $msg");
                 }
             }
 
@@ -1526,7 +1491,7 @@ if (!class_exists('mthumb')) : /**
              */
             protected function sanityFail($msg)
             {
-                return $this->error("There is a problem in the mThumb code. Message: Please report this error at <a href='https://github.com/mindsharestudios/mthumb/issues'>mThumb's issue tracking page</a>: $msg");
+                return $this->error("There is a problem in the ThumbsUp code. Message: Please report this error at <a href='https://github.com/mindsharestudios/thumbsup/issues'>ThumbsUp's issue tracking page</a>: $msg");
             }
 
             /**
@@ -1592,7 +1557,7 @@ if (!class_exists('mthumb')) : /**
                     curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
                     curl_setopt($curl, CURLOPT_HEADER, 0);
                     curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
-                    curl_setopt($curl, CURLOPT_WRITEFUNCTION, 'mthumb::curlWrite');
+                    curl_setopt($curl, CURLOPT_WRITEFUNCTION, 'ThumbsUp::curlWrite');
                     @curl_setopt($curl, CURLOPT_FOLLOWLOCATION, TRUE);
                     @curl_setopt($curl, CURLOPT_MAXREDIRS, 10);
 
@@ -1643,6 +1608,16 @@ if (!class_exists('mthumb')) : /**
             }
 
             /**
+             * @param array|bool|int|mixed|string|null $url
+             * @return ThumbsUp
+             */
+            public function setUrl(mixed $url): ThumbsUp
+            {
+                $this->url = $url;
+                return $this;
+            }
+
+            /**
              * @param $file
              *
              * @return bool
@@ -1690,4 +1665,4 @@ if (!class_exists('mthumb')) : /**
     }
 endif;
 
-mthumb::start();
+ThumbsUp::start();

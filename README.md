@@ -1,4 +1,4 @@
-NotTimThumb pre-alpha (under construction) (a secure PHP image resize script)
+ThumbsUp pre-alpha (under construction) (a secure PHP image resize script)
 ======
 
 A secure, slimmed down version of the ol' standby TimThumb. 
@@ -6,7 +6,7 @@ A secure, slimmed down version of the ol' standby TimThumb.
 Project Goals
 =======
 
-Like many WordPress developers we've been making use of the old TimThumb script for years. It works well and offers features not yet available in other projects, like BFI_Thumb (although that does look like a promising start). However, we've still got a lot of sites that we are supporting that require some of TimThumb's more advanced features like crop positioning and filters. 
+Like many WordPress developers we've been making use of the old TimThumb script for years. It works well and offers features not yet available in other projects, like WP-OTF-Regenerate-Thumbnails. However, we've still got a lot of sites that we are supporting that require some of TimThumb's more advanced features like crop positioning and filters. 
  
  So we decided to create a leaner, meaner, MUCH MORE SECURE fork of TimThumb. To that end we've foregone full backward compatibility with the old TimThumb code. Here are the major changes:
 
@@ -23,6 +23,7 @@ Like many WordPress developers we've been making use of the old TimThumb script 
 * Tilde support in URLs (for user home directories was added)
 * Code cleanup and PHP docblock comments 
 * Added check to ensure class was defined before calling start method
+* Some updates using newer PHP language features
 
 Get Involved
 ========
@@ -30,7 +31,7 @@ You can help out by testing this and reporting bugs. We ARE NOT interested in pr
 
 Pull requests are most welcome. Cheers.
 
-mThumb Parameters
+ThumbsUp Parameters
 ========
 
 <table>
@@ -45,43 +46,43 @@ mThumb Parameters
 <td>src</td>
 <td>source</td>
 <td>url to image</td>
-<td>Tells mThumb which image to resize › <a href="http://www.binarymoon.co.uk/2010/08/timthumb/">mThumb basic properties tutorial</a></td>
+<td>Tells ThumbsUp which image to resize › <a href="http://www.binarymoon.co.uk/2010/08/timthumb/">ThumbsUp basic properties tutorial</a></td>
 </tr>
 <tr>
 <td>w</td>
 <td>width</td>
 <td>the width to resize to</td>
-<td>Remove the width to scale proportionally (will then need the height) › <a href="http://www.binarymoon.co.uk/2010/08/timthumb/">mThumb width tutorial</a></td>
+<td>Remove the width to scale proportionally (will then need the height) › <a href="http://www.binarymoon.co.uk/2010/08/timthumb/">ThumbsUp width tutorial</a></td>
 </tr>
 <tr>
 <td>h</td>
 <td>height</td>
 <td>the height to resize to</td>
-<td>Remove the height to scale proportionally (will then need the width) › <a href="http://www.binarymoon.co.uk/2010/08/timthumb/">mThumb height tutorial</a></td>
+<td>Remove the height to scale proportionally (will then need the width) › <a href="http://www.binarymoon.co.uk/2010/08/timthumb/">ThumbsUp height tutorial</a></td>
 </tr>
 <tr>
 <td>q</td>
 <td>quality</td>
 <td>0 – 100</td>
-<td>Compression quality. The higher the number the nicer the image will look. I wouldn’t recommend going any higher than about 95 else the image will get too large › <a href="http://www.binarymoon.co.uk/2010/08/timthumb/">mThumb image quality tutorial</a></td>
+<td>Compression quality. The higher the number the nicer the image will look. I wouldn’t recommend going any higher than about 95 else the image will get too large › <a href="http://www.binarymoon.co.uk/2010/08/timthumb/">ThumbsUp image quality tutorial</a></td>
 </tr>
 <tr>
 <td>a</td>
 <td>alignment</td>
 <td>c, t, l, r, b, tl, tr, bl, br</td>
-<td>Crop alignment. c = center, t = top, b = bottom, r = right, l = left. The positions can be joined to create diagonal positions › <a href="http://www.binarymoon.co.uk/2010/08/timthumb-part-4-moving-crop-location/">mThumb crop position tutorial</a></td>
+<td>Crop alignment. c = center, t = top, b = bottom, r = right, l = left. The positions can be joined to create diagonal positions › <a href="http://www.binarymoon.co.uk/2010/08/timthumb-part-4-moving-crop-location/">ThumbsUp crop position tutorial</a></td>
 </tr>
 <tr>
 <td>zc</td>
 <td>zoom / crop</td>
 <td>0, 1, 2, 3</td>
-<td>Change the cropping and scaling settings › <a href="http://www.binarymoon.co.uk/2011/03/timthumb-proportional-scaling-security-improvements/">mThumb crop scaling tutorial</a></td>
+<td>Change the cropping and scaling settings › <a href="http://www.binarymoon.co.uk/2011/03/timthumb-proportional-scaling-security-improvements/">ThumbsUp crop scaling tutorial</a></td>
 </tr>
 <tr>
 <td>f</td>
 <td>filters</td>
 <td>too many to mention</td>
-<td>Let’s you apply image filters to change the resized picture. For instance you can change brightness/ contrast or even blur the image › <a href="http://www.binarymoon.co.uk/2010/08/timthumb-image-filters/">mThumb image filter tutorial</a></td>
+<td>Let’s you apply image filters to change the resized picture. For instance you can change brightness/ contrast or even blur the image › <a href="http://www.binarymoon.co.uk/2010/08/timthumb-image-filters/">ThumbsUp image filter tutorial</a></td>
 </tr>
 <tr>
 <td>s</td>
@@ -106,7 +107,7 @@ mThumb Parameters
 
 Configuration Constants
 ========
-You can override certain built in settings in mThumb. by creating a config file called mthumb-config.php and would contain a series of define statements that change default settings. 
+You can override certain built in settings in ThumbsUp. by creating a config file called mthumb-config.php and would contain a series of define statements that change default settings. 
 
 There are a whole bunch of settings that are not controlled by the normal query string parameters.
 
@@ -140,7 +141,7 @@ There are a whole bunch of settings that are not controlled by the normal query 
 <tr>
 <td>FILE_CACHE_TIME_BETWEEN_CLEANS</td>
 <td>86400 (milliseconds)</td>
-<td>mThumb automatically cleans up the cached files. This defines the amount of time between the different the cache cleaning.</td>
+<td>ThumbsUp automatically cleans up the cached files. This defines the amount of time between the different the cache cleaning.</td>
 </tr>
 <tr>
 <td>FILE_CACHE_MAX_FILE_AGE</td>
@@ -208,6 +209,14 @@ There are a whole bunch of settings that are not controlled by the normal query 
 
 Changelog
 ========
+* 4.0 - TODO
 * 3.0.1 - Bugfix for unwritable cache folder
 * 3.0 - Version number update to calm down some automated scanners that think this is an old version of TimThumb
 * 1.0 - First proper release
+
+
+TODO
+=========
+* Update docs
+* cleanup code
+* tests
