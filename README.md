@@ -1,9 +1,5 @@
-<<<<<<< HEAD
-ThumbsUp pre-alpha (under construction) (a secure PHP image resize script)
-=======
 ThumbsUp  (a secure PHP image resize script)
 pre-alpha (under construction)
->>>>>>> 343dc26605cda7aa58fb31de67795611bf1bde01
 ======
 
 A secure, slimmed down version of the ol' standby TimThumb. 
